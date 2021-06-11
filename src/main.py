@@ -1,5 +1,5 @@
 from .routers import app
-from aiohttp_swagger import *
+from aiohttp_swagger import setup_swagger
 
 
 def init_func(argv):

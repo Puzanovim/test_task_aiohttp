@@ -1,9 +1,8 @@
 from typing import List
-
 from aiohttp import web
-from .app import app
-from .db import set_value, get_value, clean_db
-from .schemas import ExchangeRate
+from src.app import app
+from src.db import set_value, get_value, clean_db
+from src.schemas import ExchangeRate
 
 routes = web.RouteTableDef()
 
@@ -14,20 +13,7 @@ async def get_handler(request):
 
 
 @routes.get('/convert')
-async def get_handler(request):
-    """
-    ---
-    description: This end-point allow to convert currency.
-    tags:
-    - Convert
-    produces:
-    - text/plain
-    responses:
-        "200":
-            description: successful operation. Return result in JSON
-        "405":
-            description: invalid HTTP Method
-    """
+async def get_convert_currency(request):
     currency_from = request.query["from"]
     currency_to = request.query["to"]
     amount = int(request.query["amount"])
@@ -40,29 +26,19 @@ async def get_handler(request):
 
 
 @routes.post('/database')
-async def post_handler(request, data: List[ExchangeRate]):
-    """
-    ---
-    description: This end-point allow to test that service is up.
-    tags:
-    - Health check
-    produces:
-    - text/plain
-    responses:
-        "200":
-            description: successful operation. Return "pong" text
-        "405":
-            description: invalid HTTP Method
-    """
-    merge = request.query["merge"]
+async def post_exchange_rate(request, data: List[ExchangeRate]):
+    merge = int(request.query["merge"])
     if merge == 0:
         await clean_db()
     elif merge != 1:
-        raise web.HTTPMethodNotAllowed()
+        raise web.HTTPException()
+    result = []
     for data_item in data:
         key = f"{data_item.currency_from}-{data_item.currency_to}"
         value = data_item.value
+        result.append({"key": key, "value": value})
         await set_value(key, value)
+    return web.json_response({"result": result})
 
 
 app.add_routes(routes)
