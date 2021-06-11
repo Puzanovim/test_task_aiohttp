@@ -1,0 +1,17 @@
+# virtualenv
+venv/
+.venv/
+ENV/
+
+# pytest
+.pytest_cache/
+
+# IDE
+.idea/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.local
