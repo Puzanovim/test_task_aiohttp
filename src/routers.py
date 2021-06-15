@@ -26,7 +26,9 @@ async def get_convert_currency(request):
 
 
 @routes.post('/database')
-async def post_exchange_rate(request, data: List[ExchangeRate]):
+async def post_exchange_rate(request):
+    data = request.post()
+    print(data)
     merge = int(request.query["merge"])
     if merge == 0:
         await clean_db()

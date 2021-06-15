@@ -1,0 +1,48 @@
+version: '3'
+networks:
+  test_task:
+    driver: bridge
+
+services:
+  code:
+    image: "test_task"
+    container_name: main_api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    networks:
+      - test_task
+    depends_on:
+      - redis
+
+  storage:
+    image: 'test_task'
+    command: 'start_storage_service'
+    container_name: storage
+    networks:
+      - test_task
+    ports:
+      - 8001:8001
+
+  worker:
+    image: 'test_task'
+    command: 'rq worker --url redis://redis:6379'
+    networks:
+      - test_task
+    depends_on:
+      - redis
+
+  redis:
+    image: 'bitnami/redis:5.0'
+    environment:
+      # ALLOW_EMPTY_PASSWORD is recommended only for development.
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+    volumes:
+      - ./redis.conf:/opt/bitnami/redis/etc/redis.conf
+    ports:
+      - 6379:6379
+    networks:
+      - test_task
