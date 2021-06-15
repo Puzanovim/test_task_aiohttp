@@ -17,7 +17,7 @@ components:
         currency_to:
           type: string
         value:
-          type: integer
+          type: number
       required:
         - currency_from
         - currency_to
@@ -45,7 +45,7 @@ paths:
         - in: query
           name: amount
           schema:
-            type: integer
+            type: number
           required: true
       responses:
         '200':
@@ -66,31 +66,15 @@ paths:
           schema:
             type: integer
           required: true
-        - in: body
-          name: data
-          required: true
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/ExchangeRate'
-#      parameters:
-#        - in: query
-#          name: merge
-#          schema:
-#            type: integer
-#          required: true
-#      requestBody:
-#        description: List of exchange rates
-#        required: true
-#        content:
-#          text/plain:
-#            schema:
-#              type: string
-#          application/json:
-#            schema:
-#              type: array
-#              items:
-#                $ref: '#/components/schemas/ExchangeRate'
+      requestBody:
+        description: List of exchange rates
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/ExchangeRate'
       responses:
         '201': # status code
           description: A JSON array of new exchange rate
