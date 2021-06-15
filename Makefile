@@ -33,7 +33,7 @@ win_test:
 
 
 up:
-	python3.8 -m aiohttp.web -H localhost -P 8000 $(CODE).main:init_func
+	python3.8 -m aiohttp.web -H localhost -P 8080 $(CODE).main:init_func
 
 
 ci:	lint test
